@@ -68,7 +68,7 @@ input[type=number] { -moz-appearance: textfield; }
 .bar-track-sm { background: #1e1e1e; border-radius: 2px; overflow: hidden; height: 5px; margin-bottom: 6px; }
 .bar-fill { height: 100%; border-radius: 2px; transition: width 0.7s cubic-bezier(.4,0,.2,1); }
 
-.card-footer { display: flex; justify-content: space-between; font-size: 11px; color: #666; }
+.card-footer { display: flex; justify-content: space-between; font-size: 11px; color: #666; white-space: nowrap; gap: 8px; }
 .goal-met { color: #4cff91; letter-spacing: 1px; }
 
 .log-label { font-size: 10px; color: #666; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; }
@@ -253,7 +253,7 @@ input[type=number] { -moz-appearance: textfield; }
     } else {
       const dl = 6 - today.getDay();
       const weekElapsedPct = Math.round((today.getDay() / 7) * 100);
-      ws.textContent = fmt(WEEKLY_GOAL-weekTotal)+' to go · '+dl+'d · '+weekElapsedPct+'% thru week';
+      ws.textContent = fmt(WEEKLY_GOAL-weekTotal)+' left · '+dl+'d · '+weekElapsedPct+'% wk';
     }
 
     document.getElementById('month-total').textContent = fmt(monthTotal);
@@ -267,7 +267,7 @@ input[type=number] { -moz-appearance: textfield; }
     } else {
       const dim = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
       const monthElapsedPct = Math.round((today.getDate() / dim) * 100);
-      ms.textContent = fmt(MONTHLY_GOAL-monthTotal)+' to go · '+(dim-today.getDate())+'d · '+monthElapsedPct+'% thru month';
+      ms.textContent = fmt(MONTHLY_GOAL-monthTotal)+' left · '+(dim-today.getDate())+'d · '+monthElapsedPct+'% mo';
     }
 
     const recent = data.entries.slice(0,20);
