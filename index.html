@@ -141,7 +141,7 @@ input[type=number] { -moz-appearance: textfield; }
       </div>
       <div>
         <div class="goal-label">GOAL</div>
-        <div class="goal-amount">$630</div>
+        <div class="goal-amount">$500</div>
       </div>
     </div>
     <div class="bar-track"><div class="bar-fill" id="week-bar" style="width:0%;background:#ff6b35;"></div></div>
@@ -159,7 +159,7 @@ input[type=number] { -moz-appearance: textfield; }
       </div>
       <div>
         <div class="goal-label">GOAL</div>
-        <div class="goal-amount-sm">$2,510</div>
+        <div class="goal-amount-sm">$2,000</div>
       </div>
     </div>
     <div class="bar-track-sm"><div class="bar-fill" id="month-bar" style="width:0%;height:5px;background:#c8b88a;"></div></div>
@@ -194,8 +194,8 @@ input[type=number] { -moz-appearance: textfield; }
 </div>
 
 <script>
-  const WEEKLY_GOAL = 630;
-  const MONTHLY_GOAL = 2510;
+  const WEEKLY_GOAL = 500;
+  const MONTHLY_GOAL = 2000;
   const STORAGE_KEY = 'flex-tracker-data';
 
   function getWeekKey(date) {
@@ -252,7 +252,7 @@ input[type=number] { -moz-appearance: textfield; }
       ws.innerHTML = '<span class="goal-met">✓ GOAL MET</span>';
     } else {
       const dl = 6 - today.getDay();
-      ws.textContent = fmt(WEEKLY_GOAL-weekTotal)+' to go · '+dl+'d left';
+      ws.textContent = fmt(WEEKLY_GOAL-weekTotal)+' to go · '+dl+'d · '+weekPct.toFixed(0)+'%';
     }
 
     document.getElementById('month-total').textContent = fmt(monthTotal);
@@ -265,7 +265,7 @@ input[type=number] { -moz-appearance: textfield; }
       ms.innerHTML = '<span class="goal-met">✓ GOAL MET</span>';
     } else {
       const dim = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
-      ms.textContent = fmt(MONTHLY_GOAL-monthTotal)+' to go · '+(dim-today.getDate())+'d left';
+      ms.textContent = fmt(MONTHLY_GOAL-monthTotal)+' to go · '+(dim-today.getDate())+'d · '+monthPct.toFixed(0)+'%';
     }
 
     const recent = data.entries.slice(0,20);
