@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="Flex Tracker" />
+  <title>Flex Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: #0d0d0d; color: #e8e0d0; font-family: 'IBM Plex Mono', 'Courier New', monospace; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #111; }
+    ::-webkit-scrollbar-thumb { background: #444; }
+
+```
+@keyframes flashRing {
+  0%   { box-shadow: 0 0 0 0 rgba(255,210,50,0.8); }
+  50%  { box-shadow: 0 0 0 18px rgba(255,210,50,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,210,50,0); }
+}
+.flash-ring { animation: flashRing 0.6s ease; }
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; }
+
+#header {
+  background: #111;
+  border-bottom: 3px solid #ffd232;
+  padding: 18px 24px 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+#header-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 4px;
+  color: #ffd232;
+  line-height: 1;
+}
+#header-sub { font-size: 11px; color: #666; letter-spacing: 2px; text-transform: uppercase; }
+
+#main { max-width: 560px; margin: 0 auto; padding: 20px 16px 40px; }
+
+.card { background: #141414; border-radius: 4px; padding: 20px 20px 16px; margin-bottom: 12px; }
+#week-card { border: 2px solid #ffd232; }
+#month-card { border: 1px solid #2a2a2a; }
+#log-card { border: 1px solid #2a2a2a; margin-bottom: 20px; }
+
+.card-label { font-size: 10px; color: #888; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 2px; }
+.card-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
+.week-amount { font-family: 'Bebas Neue', sans-serif; font-size: 52px; color: #ffd232; line-height: 1; }
+.month-amount { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: #c8b88a; line-height: 1; }
+.goal-label { font-size: 10px; color: #666; letter-spacing: 2px; margin-bottom: 4px; text-align: right; }
+.goal-amount { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #888; text-align: right; }
+.goal-amount-sm { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: #666; text-align: right; }
+
+.bar-track { background: #222; border-radius: 2px; overflow: hidden; height: 8px; margin-bottom: 8px; }
+.bar-track-sm { background: #1e1e1e; border-radius: 2px; overflow: hidden; height: 5px; margin-bottom: 6px; }
+.bar-fill { height: 100%; border-radius: 2px; transition: width 0.7s cubic-bezier(.4,0,.2,1); }
+
+.card-footer { display: flex; justify-content: space-between; font-size: 11px; color: #666; }
+.goal-met { color: #4cff91; letter-spacing: 1px; }
+
+.log-label { font-size: 10px; color: #666; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; }
+.input-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.amount-wrap { position: relative; flex: 1; }
+.dollar-sign {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  color: #ffd232; font-size: 16px; font-weight: 600; pointer-events: none;
+}
+#amount-input {
+  width: 100%; background: #0d0d0d; border: 1px solid #333; border-radius: 3px;
+  color: #ffd232; font-family: 'Bebas Neue', sans-serif; font-size: 26px;
+  padding: 10px 12px 10px 26px; outline: none; letter-spacing: 1px;
+}
+#date-input {
+  background: #0d0d0d; border: 1px solid #333; border-radius: 3px;
+  color: #888; font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  padding: 10px; outline: none; width: 130px;
+}
+#note-input {
+  flex: 1; background: #0d0d0d; border: 1px solid #2a2a2a; border-radius: 3px;
+  color: #aaa; font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  padding: 8px 12px; outline: none;
+}
+#add-btn {
+  background: #ffd232; color: #0d0d0d; border: none; border-radius: 3px;
+  font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 2px;
+  padding: 8px 22px; cursor: pointer; transition: transform 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+#add-btn:active { transform: scale(0.97); }
+
+#entries-card { background: #141414; border: 1px solid #1e1e1e; border-radius: 4px; overflow: hidden; }
+.entries-header { padding: 10px 20px; border-bottom: 1px solid #1e1e1e; font-size: 10px; color: #555; letter-spacing: 3px; text-transform: uppercase; }
+.entry-row { display: flex; align-items: center; padding: 10px 20px; gap: 12px; transition: background 0.15s; border-bottom: 1px solid #1a1a1a; }
+.entry-row:last-child { border-bottom: none; }
+.entry-amount { color: #ffd232; font-family: 'Bebas Neue', sans-serif; font-size: 20px; min-width: 80px; }
+.entry-meta { flex: 1; }
+.entry-date { font-size: 11px; color: #555; }
+.entry-note { font-size: 11px; color: #888; margin-top: 1px; }
+.del-btn {
+  background: none; border: 1px solid #333; color: #555; border-radius: 2px;
+  padding: 2px 8px; cursor: pointer; font-family: monospace; font-size: 12px;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) { .del-btn { opacity: 0; transition: opacity 0.15s; } .entry-row:hover .del-btn { opacity: 1; } }
+.confirm-btns { display: flex; gap: 6px; }
+.confirm-yes { background: #ff4444; color: #fff; border: none; border-radius: 2px; padding: 3px 8px; font-size: 11px; cursor: pointer; font-family: monospace; }
+.confirm-no { background: #333; color: #aaa; border: none; border-radius: 2px; padding: 3px 8px; font-size: 11px; cursor: pointer; font-family: monospace; }
+
+#empty-msg { text-align: center; color: #333; font-size: 12px; letter-spacing: 2px; padding: 32px; }
+#footer-note { text-align: center; color: #2a2a2a; font-size: 10px; letter-spacing: 2px; margin-top: 24px; }
+```
+
+  </style>
+</head>
+<body>
+
+<div id="header">
+  <span id="header-title">FLEX EARNINGS</span>
+  <span id="header-sub">Tracker</span>
+</div>
+
+<div id="main">
+  <div class="card" id="week-card">
+    <div class="card-row">
+      <div>
+        <div class="card-label">This Week</div>
+        <div class="week-amount" id="week-total">$0.00</div>
+      </div>
+      <div>
+        <div class="goal-label">GOAL</div>
+        <div class="goal-amount">$630</div>
+      </div>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="week-bar" style="width:0%;background:#ff6b35;"></div></div>
+    <div class="card-footer">
+      <span id="week-pct">0% of goal</span>
+      <span id="week-status"></span>
+    </div>
+  </div>
+
+  <div class="card" id="month-card">
+    <div class="card-row">
+      <div>
+        <div class="card-label" style="color:#666;">This Month</div>
+        <div class="month-amount" id="month-total">$0.00</div>
+      </div>
+      <div>
+        <div class="goal-label">GOAL</div>
+        <div class="goal-amount-sm">$2,510</div>
+      </div>
+    </div>
+    <div class="bar-track-sm"><div class="bar-fill" id="month-bar" style="width:0%;height:5px;background:#c8b88a;"></div></div>
+    <div class="card-footer" style="color:#555;">
+      <span id="month-pct">0% of goal</span>
+      <span id="month-status"></span>
+    </div>
+  </div>
+
+  <div class="card" id="log-card">
+    <div class="log-label">Log a Route</div>
+    <div class="input-row">
+      <div class="amount-wrap">
+        <span class="dollar-sign">$</span>
+        <input type="number" id="amount-input" placeholder="0.00" step="0.01" min="0" inputmode="decimal" />
+      </div>
+      <input type="date" id="date-input" />
+    </div>
+    <div class="input-row">
+      <input type="text" id="note-input" placeholder="Note (optional)" maxlength="40" />
+      <button id="add-btn">ADD</button>
+    </div>
+  </div>
+
+  <div id="entries-card" style="display:none;">
+    <div class="entries-header">Recent Entries</div>
+    <div id="entries-list"></div>
+  </div>
+
+  <div id="empty-msg">NO ENTRIES YET — LOG YOUR FIRST ROUTE</div>
+  <div id="footer-note">DATA STORED LOCALLY ON THIS DEVICE</div>
+</div>
+
+<script>
+  const WEEKLY_GOAL = 630;
+  const MONTHLY_GOAL = 2510;
+  const STORAGE_KEY = 'flex-tracker-data';
+
+  function getWeekKey(date) {
+    const d = date ? new Date(date) : new Date();
+    d.setHours(0,0,0,0);
+    const sun = new Date(d);
+    sun.setDate(d.getDate() - d.getDay());
+    return sun.toISOString().slice(0,10);
+  }
+
+  function getMonthKey(date) {
+    const d = date ? new Date(date) : new Date();
+    return d.toISOString().slice(0,7);
+  }
+
+  function fmt(n) {
+    return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function loadData() {
+    try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : {entries:[]}; }
+    catch { return {entries:[]}; }
+  }
+
+  function saveData(d) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch {}
+  }
+
+  let data = loadData();
+  let pendingDelete = null;
+
+  document.getElementById('date-input').value = new Date().toISOString().slice(0,10);
+
+  function render() {
+    const today = new Date();
+    const weekKey = getWeekKey();
+    const monthKey = getMonthKey();
+
+    const weekEntries = data.entries.filter(e => getWeekKey(new Date(e.date+'T12:00:00')) === weekKey);
+    const monthEntries = data.entries.filter(e => getMonthKey(new Date(e.date+'T12:00:00')) === monthKey);
+
+    const weekTotal = weekEntries.reduce((s,e) => s+e.amount, 0);
+    const monthTotal = monthEntries.reduce((s,e) => s+e.amount, 0);
+    const weekPct = Math.min((weekTotal/WEEKLY_GOAL)*100, 100);
+    const monthPct = Math.min((monthTotal/MONTHLY_GOAL)*100, 100);
+
+    document.getElementById('week-total').textContent = fmt(weekTotal);
+    const wb = document.getElementById('week-bar');
+    wb.style.width = weekPct+'%';
+    wb.style.background = weekPct>=100?'#4cff91':weekPct>=70?'#ffd232':'#ff6b35';
+    document.getElementById('week-pct').textContent = weekPct.toFixed(0)+'% of goal';
+    const ws = document.getElementById('week-status');
+    if (weekTotal >= WEEKLY_GOAL) {
+      ws.innerHTML = '<span class="goal-met">✓ GOAL MET</span>';
+    } else {
+      const dl = 6 - today.getDay();
+      ws.textContent = fmt(WEEKLY_GOAL-weekTotal)+' to go · '+dl+'d left';
+    }
+
+    document.getElementById('month-total').textContent = fmt(monthTotal);
+    const mb = document.getElementById('month-bar');
+    mb.style.width = monthPct+'%';
+    mb.style.background = monthPct>=100?'#4cff91':'#c8b88a';
+    document.getElementById('month-pct').textContent = monthPct.toFixed(0)+'% of goal';
+    const ms = document.getElementById('month-status');
+    if (monthTotal >= MONTHLY_GOAL) {
+      ms.innerHTML = '<span class="goal-met">✓ GOAL MET</span>';
+    } else {
+      const dim = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
+      ms.textContent = fmt(MONTHLY_GOAL-monthTotal)+' to go · '+(dim-today.getDate())+'d left';
+    }
+
+    const recent = data.entries.slice(0,20);
+    const card = document.getElementById('entries-card');
+    const empty = document.getElementById('empty-msg');
+    const list = document.getElementById('entries-list');
+
+    if (recent.length === 0) { card.style.display='none'; empty.style.display='block'; }
+    else {
+      card.style.display='block'; empty.style.display='none';
+      list.innerHTML='';
+      recent.forEach(entry => {
+        const row = document.createElement('div');
+        row.className='entry-row';
+
+        const amt = document.createElement('div');
+        amt.className='entry-amount';
+        amt.textContent=fmt(entry.amount);
+
+        const meta = document.createElement('div');
+        meta.className='entry-meta';
+        const dt = document.createElement('div');
+        dt.className='entry-date'; dt.textContent=entry.date;
+        meta.appendChild(dt);
+        if (entry.note) {
+          const nt = document.createElement('div');
+          nt.className='entry-note'; nt.textContent=entry.note;
+          meta.appendChild(nt);
+        }
+
+        row.appendChild(amt);
+        row.appendChild(meta);
+
+        if (pendingDelete === entry.id) {
+          const btns = document.createElement('div');
+          btns.className='confirm-btns';
+          const yes = document.createElement('button');
+          yes.className='confirm-yes'; yes.textContent='DELETE';
+          yes.onclick = () => { data.entries=data.entries.filter(e=>e.id!==entry.id); saveData(data); pendingDelete=null; render(); };
+          const no = document.createElement('button');
+          no.className='confirm-no'; no.textContent='CANCEL';
+          no.onclick = () => { pendingDelete=null; render(); };
+          btns.appendChild(yes); btns.appendChild(no);
+          row.appendChild(btns);
+        } else {
+          const del = document.createElement('button');
+          del.className='del-btn'; del.textContent='✕';
+          del.onclick = () => { pendingDelete=entry.id; render(); };
+          row.appendChild(del);
+        }
+
+        list.appendChild(row);
+      });
+    }
+  }
+
+  function addEntry() {
+    const amount = parseFloat(document.getElementById('amount-input').value);
+    if (!amount || isNaN(amount) || amount <= 0) return;
+    const note = document.getElementById('note-input').value.trim() || null;
+    const date = document.getElementById('date-input').value || new Date().toISOString().slice(0,10);
+    data.entries.unshift({ id: Date.now(), amount, note, date, createdAt: new Date().toISOString() });
+    saveData(data);
+    document.getElementById('amount-input').value='';
+    document.getElementById('note-input').value='';
+    const wc = document.getElementById('week-card');
+    wc.classList.remove('flash-ring');
+    void wc.offsetWidth;
+    wc.classList.add('flash-ring');
+    render();
+  }
+
+  document.getElementById('add-btn').addEventListener('click', addEntry);
+  document.getElementById('amount-input').addEventListener('keydown', e => { if(e.key==='Enter') addEntry(); });
+  document.getElementById('note-input').addEventListener('keydown', e => { if(e.key==='Enter') addEntry(); });
+
+  render();
+</script>
+
+</body>
+</html>
