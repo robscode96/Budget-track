@@ -252,7 +252,8 @@ input[type=number] { -moz-appearance: textfield; }
       ws.innerHTML = '<span class="goal-met">✓ GOAL MET</span>';
     } else {
       const dl = 6 - today.getDay();
-      ws.textContent = fmt(WEEKLY_GOAL-weekTotal)+' to go · '+dl+'d · '+weekPct.toFixed(0)+'%';
+      const weekElapsedPct = Math.round((today.getDay() / 7) * 100);
+      ws.textContent = fmt(WEEKLY_GOAL-weekTotal)+' to go · '+dl+'d · '+weekElapsedPct+'% thru week';
     }
 
     document.getElementById('month-total').textContent = fmt(monthTotal);
@@ -265,7 +266,8 @@ input[type=number] { -moz-appearance: textfield; }
       ms.innerHTML = '<span class="goal-met">✓ GOAL MET</span>';
     } else {
       const dim = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
-      ms.textContent = fmt(MONTHLY_GOAL-monthTotal)+' to go · '+(dim-today.getDate())+'d · '+monthPct.toFixed(0)+'%';
+      const monthElapsedPct = Math.round((today.getDate() / dim) * 100);
+      ms.textContent = fmt(MONTHLY_GOAL-monthTotal)+' to go · '+(dim-today.getDate())+'d · '+monthElapsedPct+'% thru month';
     }
 
     const recent = data.entries.slice(0,20);
